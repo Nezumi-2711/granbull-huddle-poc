@@ -1,0 +1,13 @@
+{
+  "name": "granbull-huddle-poc",
+  "private": true,
+  "packageManager": "pnpm@12.18.0",
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm --parallel --filter ./apps/* dev",
+    "dev:sfu": "docker compose -f infra/compose.dev.yml up",
+    "build": "pnpm --filter @huddle/web build && pnpm --filter @huddle/api build",
+    "start": "pnpm --filter @huddle/api start",
+    "typecheck": "pnpm -r typecheck"
+  }
+}

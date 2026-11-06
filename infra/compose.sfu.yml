@@ -1,0 +1,28 @@
+# LiveKit SFU for Dokploy ("Compose" service, source type: raw — paste this file).
+# - Signaling (7880) goes through Dokploy's Traefik with TLS: domain
+#   livekit.<your-domain> -> service "livekit", port 7880.
+# - Media ports are published straight to the host: open 7881/tcp + 7882/udp.
+# - Config is passed inline via LIVEKIT_CONFIG (same content as infra/livekit.yaml),
+#   keys via LIVEKIT_KEYS, so no file mount is needed.
+services:
+  livekit:
+    image: livekit/livekit-server:v1.13.11
+    restart: unless-stopped
+    environment:
+      LIVEKIT_KEYS: "${LIVEKIT_API_KEY}: ${LIVEKIT_API_SECRET}"
+      LIVEKIT_CONFIG: |
+        port: 7880
+        bind_addresses: ["0.0.0.0"]
+        log_level: info
+        rtc:
+          tcp_port: 7881
+          udp_port: 7882
+          use_external_ip: true
+        room:
+          empty_timeout: 300
+          max_participants: 50
+    ports:
+      - "7881:7881/tcp"
+      - "7882:7882/udp"
+    expose:
+      - "7880"
